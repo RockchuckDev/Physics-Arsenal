@@ -12,16 +12,20 @@ public partial class PlayerInteraction : RayCast3D
     [Export] public float grabDampening;
     [Export] public float grabRotationStrength;
     [Export] public float grabRotationDampening;
-    //Just a generic6DofJoint with all linear and angular limits set to 0, mimicking the "FixedJoint" component from Unity, which essentialy fuses two rigidbodies together
-    [Export] public PackedScene fixedJointScene;
     [Export] public float grabDistanceAdjustmentIncrement;
+    [Export] public float grabCenterOffset;
 
-    private Basis objectRotationOffset;
+    private Basis rightHandRotationOffset;
+    private Basis leftHandRotationOffset;
     private RigidBody3D activeRightGrabPivot;
-    private Generic6DofJoint3D activeFixed6DofJoint;
+    private RigidBody3D activeLeftGrabPivot;
+    private Generic6DofJoint3D activeRightHandFixedJoint;
+    private Generic6DofJoint3D activeLeftHandFixedJoint;
     private RigidBody3D activeRightGrabObject;
+    private RigidBody3D activeLeftGrabObject;
     private float currentGrabDistance;
-    private Vector3 targetGrabPosition;
+    private Vector3 targetRightHandPosition;
+    private Vector3 targetLeftHandPosition;
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -39,8 +43,7 @@ public partial class PlayerInteraction : RayCast3D
             if (colliderAsNode.GetMeta("grabbable", false).AsBool())
             {
 
-                //GRABBING OBJECT---------------------------
-                // Soon I will add logic to be able to grab objects with both hands independently, currently we only deal with the right hand grabbing objects
+                //GRABBING OBJECT WITH RIGHT HAND---------------------------
                 if (Input.IsActionJustPressed("right_grab") && activeRightGrabPivot == null)
                 {
                     activeRightGrabObject = colliderAsNode as RigidBody3D;
@@ -50,16 +53,36 @@ public partial class PlayerInteraction : RayCast3D
                     activeRightGrabPivot.Position = GetCollisionPoint();
                     GetTree().Root.AddChild(activeRightGrabPivot);
 
-                    currentGrabDistance = GlobalPosition.DistanceTo(GetCollisionPoint());
+
 
                     //Rotation is applied right to left, so here we undo the rotation of this Node, then apply the rotation of the activeRightGrabPivot, telling us the rotation difference between this Node and the activeRightGrabPivot
-                    objectRotationOffset = activeRightGrabPivot.GlobalBasis * GlobalBasis.Inverse();
+                    rightHandRotationOffset = activeRightGrabPivot.GlobalBasis * GlobalBasis.Inverse();
 
-                    activeFixed6DofJoint = fixedJointScene.Instantiate<Generic6DofJoint3D>();
-                    activeFixed6DofJoint.Position = GetCollisionPoint();
-                    GetTree().Root.AddChild(activeFixed6DofJoint);
-                    activeFixed6DofJoint.NodeA = activeRightGrabPivot.GetPath();
-                    activeFixed6DofJoint.NodeB = activeRightGrabObject.GetPath();
+                    activeRightHandFixedJoint = new Generic6DofJoint3D();
+                    activeRightHandFixedJoint.Position = GetCollisionPoint();
+                    GetTree().Root.AddChild(activeRightHandFixedJoint);
+                    activeRightHandFixedJoint.NodeA = activeRightGrabPivot.GetPath();
+                    activeRightHandFixedJoint.NodeB = activeRightGrabObject.GetPath();
+
+
+                }
+                else if (Input.IsActionJustPressed("left_grab") && activeLeftGrabPivot == null)
+                {
+                    activeLeftGrabObject = colliderAsNode as RigidBody3D;
+
+                    activeLeftGrabPivot = grabPivotScene.Instantiate<RigidBody3D>();
+                    activeLeftGrabPivot.Position = GetCollisionPoint();
+                    GetTree().Root.AddChild(activeLeftGrabPivot);
+
+                    currentGrabDistance = GlobalPosition.DistanceTo(GetCollisionPoint());
+
+                    leftHandRotationOffset = activeLeftGrabPivot.GlobalBasis * GlobalBasis.Inverse();
+
+                    activeLeftHandFixedJoint = new Generic6DofJoint3D();
+                    activeLeftHandFixedJoint.Position = GetCollisionPoint();
+                    GetTree().Root.AddChild(activeLeftHandFixedJoint);
+                    activeLeftHandFixedJoint.NodeA = activeLeftGrabPivot.GetPath();
+                    activeLeftHandFixedJoint.NodeB = activeLeftGrabObject.GetPath();
 
 
                 }
@@ -67,20 +90,8 @@ public partial class PlayerInteraction : RayCast3D
 
         }
 
-        //DROPPING OBJECT---------------------------
-        if (activeRightGrabPivot != null)
+        if (activeRightGrabPivot != null || activeLeftGrabPivot != null)
         {
-
-            //DROPPING OBJECT
-            Vector3 toGrabbedObject = activeRightGrabObject.GlobalPosition - GlobalPosition;
-            //Dot product is some straight up magic, even my calculus teacher doesn't know why it works.
-            // All you need to know, is that if the dot product of two vectors is positive, they are less than 90 degrees apart, and if the product is negative, they are more than 90 degrees apart
-            // What this means for us, is that if the dot product of the direction the player is facing and the direction the object is from this Node is negative, the object is behind the player
-            if (Input.IsActionJustReleased("right_grab") || toGrabbedObject.Dot(-GlobalBasis.Z) < 0)
-            {
-                Drop();
-            }
-
             if (Input.IsActionJustPressed("decrease_grab_distance"))
             {
                 currentGrabDistance -= grabDistanceAdjustmentIncrement;
@@ -91,8 +102,35 @@ public partial class PlayerInteraction : RayCast3D
             }
             currentGrabDistance = Mathf.Clamp(currentGrabDistance, 0, maxInteractDistance);
 
+            //DROPPING OBJECT---------------------------
+            if (activeRightGrabPivot != null)
+            {
+
+                //DROPPING OBJECT
+                Vector3 toGrabbedObject = activeRightGrabObject.GlobalPosition - GlobalPosition;
+                //Dot product is some straight up magic, even my calculus teacher doesn't know why it works.
+                // All you need to know, is that if the dot product of two vectors is positive, they are less than 90 degrees apart, and if the product is negative, they are more than 90 degrees apart
+                // What this means for us, is that if the dot product of the direction the player is facing and the direction the object is from this Node is negative, the object is behind the player
+                if (Input.IsActionJustReleased("right_grab") || toGrabbedObject.Dot(-GlobalBasis.Z) < 0)
+                {
+                    DropRight();
+                }
+
+            }
+            if (activeLeftGrabPivot != null)
+            {
+                Vector3 toGrabbedObject = activeLeftGrabObject.GlobalPosition - GlobalPosition;
+                if (Input.IsActionJustReleased("left_grab") || toGrabbedObject.Dot(-GlobalBasis.Z) < 0)
+                {
+                    DropLeft();
+                }
+
+            }
         }
+
+
     }
+
 
 
     public override void _PhysicsProcess(double delta)
@@ -100,24 +138,46 @@ public partial class PlayerInteraction : RayCast3D
         if (activeRightGrabPivot != null)
         {
             //POSITION OF GRABBED OBJECT
-            targetGrabPosition = GlobalPosition + -GlobalTransform.Basis.Z * currentGrabDistance;
-            Vector3 toTargetPosition = targetGrabPosition - activeRightGrabPivot.Position;
+            targetRightHandPosition = GlobalPosition + GlobalTransform.Basis.X * grabCenterOffset + -GlobalTransform.Basis.Z * currentGrabDistance;
+            Vector3 toTargetPosition = targetRightHandPosition - activeRightGrabPivot.Position;
             activeRightGrabPivot.ApplyForce(toTargetPosition * grabStrength);
             activeRightGrabPivot.ApplyForce(-activeRightGrabPivot.LinearVelocity * grabDampening);
 
             //ROTATION OF GRABBED OBJECT
-            Basis targetBasis = GlobalBasis * objectRotationOffset;
+            Basis targetBasis = GlobalBasis * rightHandRotationOffset;
             Quaternion toTargetBasis = (targetBasis * activeRightGrabPivot.GlobalBasis.Inverse()).GetRotationQuaternion();
             activeRightGrabPivot.ApplyTorque(toTargetBasis.GetAxis() * toTargetBasis.GetAngle() * grabRotationStrength);
             activeRightGrabPivot.ApplyTorque(-activeRightGrabPivot.AngularVelocity * grabRotationDampening);
         }
+
+        if (activeLeftGrabPivot != null)
+        {
+            //POSITION OF GRABBED OBJECT
+            targetLeftHandPosition = GlobalPosition - GlobalTransform.Basis.X * grabCenterOffset + -GlobalTransform.Basis.Z * currentGrabDistance;
+            Vector3 toTargetPosition = targetLeftHandPosition - activeLeftGrabPivot.Position;
+            activeLeftGrabPivot.ApplyForce(toTargetPosition * grabStrength);
+            activeLeftGrabPivot.ApplyForce(-activeLeftGrabPivot.LinearVelocity * grabDampening);
+
+            //ROTATION OF GRABBED OBJECT
+            Basis targetBasis = GlobalBasis * leftHandRotationOffset;
+            Quaternion toTargetBasis = (targetBasis * activeLeftGrabPivot.GlobalBasis.Inverse()).GetRotationQuaternion();
+            activeLeftGrabPivot.ApplyTorque(toTargetBasis.GetAxis() * toTargetBasis.GetAngle() * grabRotationStrength);
+            activeLeftGrabPivot.ApplyTorque(-activeLeftGrabPivot.AngularVelocity * grabRotationDampening);
+        }
     }
 
 
-    public void Drop()
+    public void DropRight()
     {
         activeRightGrabPivot.QueueFree();
-        activeFixed6DofJoint.QueueFree();
+        activeRightHandFixedJoint.QueueFree();
         activeRightGrabPivot = null;
+    }
+
+    private void DropLeft()
+    {
+        activeLeftGrabPivot.QueueFree();
+        activeLeftHandFixedJoint.QueueFree();
+        activeLeftGrabPivot = null;
     }
 }
