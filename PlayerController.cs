@@ -4,27 +4,42 @@ using System.Runtime.InteropServices.Marshalling;
 
 public partial class PlayerController : RigidBody3D
 {
+    /// <summary> The rate at which the player accelerates (speeds up) when they are on the ground </summary>
     [Export]
     public float groundedAccel;
+    /// <summary> The rate at which the player decelerates (slows down) when they are on the ground </summary>
     [Export]
     public float groundedDeceleration;
+
+    /// <summary> The maximum speed the player can travel at on the XZ plane</summary>
     [Export]
     public float maxSpeed;
+
+    /// <summary> The height of the peak of the player's jump, in world space units</summary>
     [Export]
     public float jumpHeight;
+
+    /// <summary> The player's first person camera</summary>
     [Export]
     public Camera3D camera;
 
+    /// <summary> The sensitivity of the player's camera, controlling how fast the camera rotates when the mouse moves</summary>
     [Export]
     public float cameraSensitivity;
+
+    /// <summary> </summary>
     [Export]
     public float sensitivityDivisor;
 
+    /// <summary> The acceleration due to gravity, in world space units per second squared (bigger = fall faster) </summary>
     [Export]
     public float baseGravityMagnitude = 9.8f;
+
+    /// <summary> The scale factor of gravity when the player falls, best to be set above one, as it makes the player's jump feel less floaty</summary>
     [Export]
     public float gravityScaleWhenFalling;
 
+    /// <summary> The amount of the player's velocity (0 - 1) that is removed when the jump button is released early</summary>
     [Export]
     public float cutFactorWhenJumpReleasedEarly;
 
@@ -38,8 +53,6 @@ public partial class PlayerController : RigidBody3D
     private bool _grounded;
 
     // INPUT FLAGS
-    //
-
     private bool _jumpFlag;
     private bool _cutJumpFlag;
 

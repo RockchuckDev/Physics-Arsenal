@@ -4,17 +4,29 @@ using System.Collections.Generic;
 
 public partial class PlayerInteraction : RayCast3D
 {
-    //grabPivotScene is nothing more than a Rigidbody3D with a mass of 1, that's it
+    /// <summary> The scene that is instantiated and grabs the object. Essentially your "hand"</summary>
     [Export] public PackedScene grabPivotScene;
-    //Called InteractDistance because soon this package will have the ability to interact with other objects, such as talking to an NPC
+
+    /// <summary> The maximum distance away from the camera that the player can interact with objects</summary>
     [Export] public float maxInteractDistance;
+
+    /// <summary> Added to maxInteractDistance to determine how far away a grabbed object needs to be from the player to be grabbed. Adding a small buffer instead of just dropping the object when it's distance from the player exceeds maxInteractDistance gives the player a little wiggle room when grabbing something at the very edge of their interact distance</summary>
     [Export] public float dropDistanceBuffer;
+
+    /// <summary> The strength of the force applied to grabbed objects to move them</summary>
     [Export] public float grabStrength;
-    //Prevents jitter, but if turned up too high can make it harder to move objects
+    /// <summary> Prevents jitter when moving grabbed objects, but if turned up too high can make it harder to move objects</summary>
     [Export] public float grabDampening;
+
+    /// <summary> The strength of the force applied to grabbed objects to rotate them</summary>
     [Export] public float grabRotationStrength;
+    /// <summary> Prevents jitter when rotating grabbed objects, but if turned up too high can make it harder to rotate objects</summary>
     [Export] public float grabRotationDampening;
+
+    /// <summary> The amount to increment/decrement the distance the grabbed object is from the player</summary>
     [Export] public float grabDistanceAdjustmentIncrement;
+
+    /// <summary> How far off to the left/right grabbed objects are when grabbed by the corresponding hands. Done so that when the player grabs two objects, they don't fight for the same space directly in front of the player</summary>
     [Export] public float grabCenterOffset;
 
     private GrabData rightHandGrabData = new GrabData();
@@ -117,7 +129,7 @@ public partial class PlayerInteraction : RayCast3D
         }
     }
 
-    public void Grab(ref GrabData grabData, RigidBody3D objectToGrab)
+    private void Grab(ref GrabData grabData, RigidBody3D objectToGrab)
     {
         grabData.grabbedObject = objectToGrab;
 
