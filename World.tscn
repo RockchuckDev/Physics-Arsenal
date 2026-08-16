@@ -2,9 +2,9 @@
 
 [ext_resource type="Material" uid="uid://blyjacuuo55pd" path="res://Physics Arsenal/Materials/White.tres" id="1_6gs8y"]
 [ext_resource type="PackedScene" uid="uid://ufj107qbr1n5" path="res://Physics Arsenal/Player.tscn" id="1_c6gwx"]
-[ext_resource type="PackedScene" uid="uid://dlq3lbnbap4ly" path="res://Physics Arsenal/Pistol.tscn" id="2_2dftf"]
+[ext_resource type="PackedScene" uid="uid://dogs12633sns2" path="res://Physics Arsenal/Pistol.tscn" id="2_2dftf"]
 [ext_resource type="Material" uid="uid://bkso6bolaaka4" path="res://Physics Arsenal/Materials/black.tres" id="3_3h8gp"]
-[ext_resource type="Script" uid="uid://damynefi10a6e" path="res://Physics Arsenal/DisplayGrabMode.cs" id="3_e2mk2"]
+[ext_resource type="Script" uid="uid://damynefi10a6e" path="res://Physics Arsenal/UI/DisplayGrabMode.cs" id="3_e2mk2"]
 [ext_resource type="Material" uid="uid://r5pdoh8qcrct" path="res://Physics Arsenal/Materials/red.tres" id="6_1t7rw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4gn1o"]
@@ -85,7 +85,7 @@ transform = Transform3D(1, 0, 0, 0, 0.79031736, 0.6126977, 0, -0.6126977, 0.7903
 shadow_enabled = true
 
 [node name="Player" parent="." unique_id=138694681 instance=ExtResource("1_c6gwx")]
-transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 6.1418433, 3.0062351, -1.100945)
+transform = Transform3D(0.99999994, 0, 0, 0, 0.99999994, 0, 0, 0, 1, 6.142, 3.071, -1.101)
 gravity_scale = 0.0
 groundedDeceleration = 15.0
 jumpHeight = 2.0
@@ -98,11 +98,18 @@ material_override = ExtResource("1_6gs8y")
 [node name="MeshInstance3D" parent="Player/Camera3D" parent_id_path=PackedInt32Array(138694681, 345564869) index="0" unique_id=898288672]
 material_override = ExtResource("3_3h8gp")
 
-[node name="Interact Raycast" parent="Player/Camera3D" parent_id_path=PackedInt32Array(138694681, 345564869) index="1" unique_id=429942733]
+[node name="Interact Raycast" parent="Player/Camera3D" parent_id_path=PackedInt32Array(138694681, 345564869) index="1" unique_id=429942733 node_paths=PackedStringArray("playerCrosshair")]
+transform = Transform3D(0.9999999, 0, 0, 0, 0.9999997, 0, 0, 0, 0.9999998, 0, 0, 0)
+grabRotationStrength = 100.0
 grabRotationDampening = 15.0
+playerCrosshair = NodePath("../Crosshair Raycast")
+
+[node name="Crosshair Raycast" type="RayCast3D" parent="Player/Camera3D" parent_id_path=PackedInt32Array(138694681, 345564869) index="2" unique_id=325461066]
+target_position = Vector3(0, 0, -100)
+debug_shape_custom_color = Color(0.98078555, 0.27888688, 0.34225106, 1)
 
 [node name="Heavy box" type="RigidBody3D" parent="." unique_id=331788972]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.3667927, 2.0782852, -6.1337743)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6660161, 2.0782852, 1.1837044)
 collision_layer = 255
 mass = 10.0
 metadata/grabbable = true
@@ -153,17 +160,18 @@ material_override = ExtResource("3_3h8gp")
 mesh = SubResource("BoxMesh_kqxok")
 
 [node name="Pistol" parent="." unique_id=728812467 instance=ExtResource("2_2dftf")]
-transform = Transform3D(3.109905e-09, 0.29144156, -0.07114635, 1.27393145e-08, -0.07114635, -0.29144156, -0.29999998, 1.6652148e-17, -1.3113415e-08, 1.3519197, 2.0276728, 4.5732994)
-metadata/rotation_override = Vector3(0, 90, 0)
+transform = Transform3D(1.6232505e-08, 0.9714719, -0.23715463, 3.5809354e-08, -0.23715463, -0.9714719, -1, 7.277066e-09, -3.8637396e-08, 1.3519197, 2.0276728, 4.5732994)
+mass = 0.2
+metadata/look_at_target = NodePath("../Heavy box")
 
-[node name="RigidBody3D" type="RigidBody3D" parent="." unique_id=1942045673]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.81973, 0.23042703)
+[node name="Red Box" type="RigidBody3D" parent="." unique_id=1942045673]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.35597515, 1.81973, -8.681353)
 metadata/grabbable = false
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D" unique_id=470660944]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Red Box" unique_id=470660944]
 mesh = SubResource("BoxMesh_4gn1o")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D" unique_id=1253989662]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Red Box" unique_id=1253989662]
 shape = SubResource("BoxShape3D_kqxok")
 
 [node name="StaticBody3D4" type="StaticBody3D" parent="." unique_id=1402340485]
@@ -194,6 +202,11 @@ mesh = SubResource("BoxMesh_uo3ap")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=706864541]
 shape = SubResource("BoxShape3D_yv2dd")
+
+[node name="Pistol2" parent="." unique_id=745913841 instance=ExtResource("2_2dftf")]
+transform = Transform3D(0.23715466, -0.23038904, -0.94375765, 0.9714719, 0.056242347, 0.23038909, 2.240489e-08, -0.9714719, 0.23715463, -5.8847594, 2.1444898, -7.5942764)
+mass = 0.2
+metadata/look_at_target = NodePath("../Player/Camera3D/Crosshair Raycast")
 
 [connection signal="PlayerChangedGrabMode" from="Player/Camera3D/Interact Raycast" to="Control/Grab Mode Display" method="OnGrabModeChanged"]
 

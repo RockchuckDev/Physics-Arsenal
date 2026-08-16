@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://bskcwucvh01w6"]
+
+[sub_resource type="Gradient" id="Gradient_xtnju"]
+colors = PackedColorArray(0.967133, 0.7999644, 0.3189652, 1, 0.55733323, 0.2155621, 0.10106837, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_7q0rw"]
+gradient = SubResource("Gradient_xtnju")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_st0g5"]
+lifetime_randomness = 0.46
+direction = Vector3(0, 0, -1)
+initial_velocity_max = 27.66
+linear_accel_min = -2.2351742e-06
+linear_accel_max = -2.2351742e-06
+radial_accel_min = -2.2351742e-06
+radial_accel_max = -2.2351742e-06
+scale_max = 2.0
+color_ramp = SubResource("GradientTexture1D_7q0rw")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xtnju"]
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.98, 0.98, 1)
+emission = Color(0.7626041, 0.930526, 7.70092e-07, 1)
+emission_energy_multiplier = 2.83
+emission_operator = 1
+
+[sub_resource type="SphereMesh" id="SphereMesh_p21k6"]
+material = SubResource("StandardMaterial3D_xtnju")
+radius = 0.01
+height = 0.02
+
+[node name="BulletImpact Particles" type="GPUParticles3D" unique_id=1562180068]
+emitting = false
+amount = 16
+lifetime = 0.05
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_st0g5")
+draw_pass_1 = SubResource("SphereMesh_p21k6")

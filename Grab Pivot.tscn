@@ -1,10 +1,8 @@
 [gd_scene format=3 uid="uid://bsps4p0cvgkyk"]
 
-[ext_resource type="Material" uid="uid://blyjacuuo55pd" path="res://PhysKit/Materials/White.tres" id="1_t7h7s"]
+[ext_resource type="Material" uid="uid://blyjacuuo55pd" path="res://Physics Arsenal/Materials/White.tres" id="1_t7h7s"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_4gn1o"]
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_p21k6"]
 
 [node name="Grab Pivot" type="RigidBody3D" unique_id=1325922695]
 
@@ -12,7 +10,3 @@
 transform = Transform3D(0.295, 0, 0, 0, 0.295, 0, 0, 0, 0.295, 0, 0, 0)
 material_override = ExtResource("1_t7h7s")
 mesh = SubResource("SphereMesh_4gn1o")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=823707489]
-transform = Transform3D(0.295, 0, 0, 0, 0.295, 0, 0, 0, 0.295, 0, 0, 0)
-shape = SubResource("SphereShape3D_p21k6")

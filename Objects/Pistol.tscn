@@ -1,9 +1,9 @@
-[gd_scene format=3 uid="uid://dogs12633sns2"]
+[gd_scene format=3 uid="uid://dlq3lbnbap4ly"]
 
 [ext_resource type="Material" uid="uid://ig204g6cisog" path="res://Physics Arsenal/Materials/Dark greyblue.tres" id="1_1mpov"]
-[ext_resource type="Script" uid="uid://unh17m3tmclu" path="res://Physics Arsenal/Objects/IsGrabbedTracker.cs" id="1_ikg4f"]
-[ext_resource type="Script" uid="uid://53htg37ilclf" path="res://Physics Arsenal/Objects/ShootOnInteract.cs" id="2_4cnlm"]
-[ext_resource type="PackedScene" uid="uid://bskcwucvh01w6" path="res://Physics Arsenal/Managers/bullet_impact_particles.tscn" id="3_ikg4f"]
+[ext_resource type="Script" uid="uid://k5lxjasx1eu1" path="res://Physics Arsenal/ShootOnInteract.cs" id="2_qtce3"]
+[ext_resource type="Script" uid="uid://b2rdwbgpf8qc0" path="res://Physics Arsenal/IsGrabbedTracker.cs" id="3_rvkf2"]
+[ext_resource type="PackedScene" uid="uid://bskcwucvh01w6" path="res://Physics Arsenal/bullet_impact_particles.tscn" id="3_utw7t"]
 [ext_resource type="PackedScene" uid="uid://6r2s41ogfbvi" path="res://Physics Arsenal/UI/BasicCrosshair.tscn" id="4_ikg4f"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_p21k6"]
@@ -18,19 +18,19 @@ metadata/look_at_target = NodePath("")
 metadata/look_at_target_y_offset = 0.3
 
 [node name="Grab Point" type="Node3D" parent="." unique_id=923376484]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.06, 0.15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0009134561, 0.014635682, 0.1491285)
 
 [node name="is grabbed tracker" type="Node" parent="." unique_id=642617165]
-script = ExtResource("1_ikg4f")
+script = ExtResource("3_rvkf2")
 
 [node name="Shoot Raycast" type="RayCast3D" parent="." unique_id=275501544 node_paths=PackedStringArray("rootObjectNode")]
 transform = Transform3D(0.99999994, 0, -3.5527137e-15, 0, 0.99999994, 0, 3.5527137e-15, 0, 0.99999994, 0, 0.3, -0.775)
 target_position = Vector3(0, 0, -100)
-script = ExtResource("2_4cnlm")
+script = ExtResource("2_qtce3")
 rootObjectNode = NodePath("..")
 bulletSpeed = 85.0
-bulletMass = 0.1
-bulletImpactParticles = ExtResource("3_ikg4f")
+bulletMass = 0.5
+bulletImpactParticles = ExtResource("3_utw7t")
 showCrosshair = true
 crosshairScene = ExtResource("4_ikg4f")
 
