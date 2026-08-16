@@ -1,4 +1,4 @@
-# Physics Arsenal v0.1.2-alpha
+# Physics Arsenal v0.3.0-alpha
 ![See it in action](https://rockchuckdev.github.io/Physics-Arsenal-Docs/assets/showcase.gif)
 A toolkit that streamlines the process of adding physics based interactions between the player and the environment. Built for Godot .NET 4.7
 
@@ -15,7 +15,7 @@ A toolkit that streamlines the process of adding physics based interactions betw
 Godot .NET 4.7. Projects made with a non .NET build of Godot can be opened with the .NET build, so you don't have to start over to use this tookit
 
 # Docs
-Full setup instructions, API reference, and roadmap can be found here: [Physics Arsenal Documentation](https://rockchuckdev.github.io/Physics-Arsenal-Docs/)
+Documentaion with setup instructions, API reference, object customization reference, roadmap, and more: [Physics Arsenal Documentation](https://rockchuckdev.github.io/Physics-Arsenal-Docs/)
 
 If you find any bugs, or have any suggestions, open an [Issue](https://github.com/Rockchuck27/Godot-PhysKit/issues).
 
