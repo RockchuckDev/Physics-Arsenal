@@ -1,4 +1,4 @@
-# Physics Arsenal v0.3.0-alpha
+# Physics Arsenal v0.2.0-alpha
 ![See it in action](https://rockchuckdev.github.io/Physics-Arsenal-Docs/assets/showcase.gif)
 A toolkit that streamlines the process of adding physics based interactions between the player and the environment. Built for Godot .NET 4.7
 
